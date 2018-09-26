@@ -1,0 +1,37 @@
+# Maintainer:  fincs <fincs.alt1@gmail.com>
+
+pkgbasename=glu
+pkgname=switch-$pkgbasename
+pkgver=9.0.0
+pkgrel=1
+pkgdesc='The Mesa GLU Library'
+arch=('any')
+url='https://mesa.freedesktop.org'
+license=(SGI FREE SOFTWARE LICENSE B)
+options=(!strip libtool staticlibs)
+source=("https://mesa.freedesktop.org/archive/glu/glu-${pkgver}.tar.gz")
+sha256sums=('4387476a1933f36fec1531178ea204057bbeb04cc2d8396c9ea32720a1f7e264')
+makedepends=('switch-pkg-config' 'devkitpro-pkgbuild-helpers')
+depends=('switch-mesa')
+
+build() {
+  cd $pkgbasename-$pkgver
+
+  source /opt/devkitpro/switchvars.sh
+
+  autoreconf --force --verbose --install
+
+  GL_LIBS="-lEGL -lglad -lglapi" \
+  ./configure --prefix="${PORTLIBS_PREFIX}" --host=aarch64-none-elf \
+    --disable-shared --enable-static
+
+  make -j3
+}
+
+package() {
+  cd $pkgbasename-$pkgver
+
+  source /opt/devkitpro/switchvars.sh
+
+  make -j3 DESTDIR="$pkgdir" install
+}
