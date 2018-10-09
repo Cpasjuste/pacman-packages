@@ -1,0 +1,32 @@
+# Maintainer: WinterMute <davem@devkitpro.org>
+pkgname=switch-uuid
+pkgver=1.0.3
+pkgrel=1
+pkgdesc='Deflate compression method library (for Nintendo Switch homebrew development)'
+arch=('any')
+url='uuid generator library'
+license=('BSD-3')
+options=(!strip libtool staticlibs)
+source=("https://freefr.dl.sourceforge.net/project/libuuid/libuuid-$pkgver.tar.gz")
+sha256sums=('46af3275291091009ad7f1b899de3d0cea0252737550e7919d17237997db5644')
+makedepends=('devkitpro-pkgbuild-helpers')
+depends=('')
+
+build() {
+  cd libuuid-$pkgver
+
+  source /opt/devkitpro/switchvars.sh
+
+  ./configure --prefix="${PORTLIBS_PREFIX}" --host=aarch64-none-elf \
+    --disable-shared --enable-static
+
+  make -j3
+}
+
+package() {
+  cd libuuid-$pkgver
+
+  source /opt/devkitpro/switchvars.sh
+
+  make -j3 DESTDIR="$pkgdir" install
+}

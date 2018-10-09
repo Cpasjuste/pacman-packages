@@ -1,0 +1,35 @@
+
+# Maintainer: WinterMute <davem@devkitpro.org>
+pkgname=switch-fontconfig
+pkgver=2.13.1
+pkgrel=1
+pkgdesc='Deflate compression method library (for Nintendo Switch homebrew development)'
+arch=('any')
+url='https://www.freedesktop.org/wiki/Software/fontconfig/'
+license=('zlib')
+options=(!strip libtool staticlibs)
+source=("https://www.freedesktop.org/software/fontconfig/release/fontconfig-$pkgver.tar.gz")
+sha256sums=('9f0d852b39d75fc655f9f53850eb32555394f36104a044bb2b2fc9e66dbbfa7f')
+makedepends=('devkitpro-pkgbuild-helpers')
+depends=('switch-freetype switch-jansson switch-libexpat switch-libxml2')
+
+build() {
+  cd fontconfig-$pkgver
+
+  source /opt/devkitpro/switchvars.sh
+
+  autoreconf
+
+  ./configure --prefix="${PORTLIBS_PREFIX}" --host=aarch64-none-elf \
+    --disable-shared --enable-static
+
+  make -j3
+}
+
+package() {
+  cd fontconfig-$pkgver
+
+  source /opt/devkitpro/switchvars.sh
+
+  make -j3 DESTDIR="$pkgdir" install
+}
