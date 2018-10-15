@@ -23,8 +23,9 @@ build() {
   sed '/^noinst_PROGRAMS/d' -i Makefile.in
   
   ./configure --prefix="${PORTLIBS_PREFIX}" --host=aarch64-none-elf \
-    --disable-shared --enable-static --disable-pcre2test-libedit \
-    --disable-pcre2test-libreadline
+    --disable-shared --enable-static \
+    --enable-pcre2-16 --enable-pcre2-32 \
+    --disable-pcre2test-libedit --disable-pcre2test-libreadline
 
   make -j4
 
