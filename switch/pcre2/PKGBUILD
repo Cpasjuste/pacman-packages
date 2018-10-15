@@ -1,0 +1,42 @@
+
+# Maintainer: fincs <fincs.alt1@gmail.com>
+pkgname=switch-pcre2
+pkgver=10.32
+pkgrel=1
+pkgdesc='PCRE - Perl Compatible Regular Expressions'
+arch=('any')
+url='https://www.pcre.org/'
+license=('apache')
+options=(!strip libtool staticlibs)
+source=( "https://ftp.pcre.org/pub/pcre/pcre2-${pkgver}.tar.gz" )
+makedepends=('devkitpro-pkgbuild-helpers')
+sha256sums=('9ca9be72e1a04f22be308323caa8c06ebd0c51efe99ee11278186cafbc4fe3af')
+
+build() {
+  cd pcre2-$pkgver
+
+  source /opt/devkitpro/devkita64.sh
+  source /opt/devkitpro/switchvars.sh
+  
+  sed '/^PROGRAMS/d' -i Makefile.in
+  sed '/^bin_PROGRAMS/d' -i Makefile.in
+  sed '/^noinst_PROGRAMS/d' -i Makefile.in
+  
+  ./configure --prefix="${PORTLIBS_PREFIX}" --host=aarch64-none-elf \
+    --disable-shared --enable-static --disable-pcre2test-libedit \
+    --disable-pcre2test-libreadline
+
+  make -j4
+
+}
+
+package() {
+
+  cd pcre2-$pkgver
+
+  source /opt/devkitpro/devkita64.sh
+  source /opt/devkitpro/switchvars.sh
+
+  make install DESTDIR="$pkgdir"
+
+}
