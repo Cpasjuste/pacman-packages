@@ -1,0 +1,39 @@
+
+# Maintainer: cpasjuste <cpasjuste@gmail.com>
+pkgname=switch-libvpx
+pkgver=1.7.0
+pkgrel=1
+pkgdesc='WebM VP8/VP9 Codec SDK'
+arch=('any')
+url='https://www.webmproject.org/code/'
+license=('libvpx')
+options=(!strip libtool staticlibs)
+source=( "https://github.com/webmproject/libvpx/archive/v${pkgver}.tar.gz" )
+makedepends=('devkitpro-pkgbuild-helpers')
+sha256sums=('1fec931eb5c94279ad219a5b6e0202358e94a93a90cfb1603578c326abfc1238')
+
+build() {
+  cd libvpx-$pkgver
+
+  source /opt/devkitpro/devkita64.sh
+  source /opt/devkitpro/switchvars.sh
+
+  CROSS=aarch64-none-elf- \
+  ./configure --prefix="${PORTLIBS_PREFIX}" \
+    --disable-shared --enable-static \
+    --target=generic-gnu --disable-multithread
+
+  make -j4
+
+}
+
+package() {
+
+  cd libvpx-$pkgver
+
+  source /opt/devkitpro/devkita64.sh
+  source /opt/devkitpro/switchvars.sh
+
+  make install DESTDIR="$pkgdir"
+
+}
