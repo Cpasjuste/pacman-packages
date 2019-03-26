@@ -1,0 +1,40 @@
+# Maintainer: WinterMute <davem@devkitpro.org>
+# Contributor: cpasjuste <cpasjuste@gmail.com>
+
+pkgname=switch-libtasn1
+pkgver=4.13
+pkgrel=1
+pkgdesc='Libtasn1 is the ASN.1 library used by GnuTLS, p11-kit and some other packages.'
+arch=('any')
+url='https://www.gnu.org/software/libtasn1/'
+license=('GPLv2')
+options=(!strip libtool staticlibs)
+#depends=('switch-zlib')
+makedepends=('switch-pkg-config' 'devkitpro-pkgbuild-helpers')
+source=("https://ftp.gnu.org/gnu/libtasn1/libtasn1-${pkgver}.tar.gz")
+groups=('switch-portlibs')
+sha256sums=('7e528e8c317ddd156230c4e31d082cd13e7ddeb7a54824be82632209550c8cca')
+
+build() {
+  cd libtasn1-$pkgver
+
+  source /opt/devkitpro/devkita64.sh
+  source /opt/devkitpro/switchvars.sh
+
+  sed -i 's/DIST_SUBDIRS = gl lib src tests doc examples/DIST_SUBDIRS = gl lib/' Makefile.in
+  sed -i 's/SUBDIRS = gl lib src tests $(am__append_1)/SUBDIRS = gl lib $(am__append_1)/' Makefile.in
+
+  ./configure --prefix=$PORTLIBS_PREFIX --host=aarch64-none-elf \
+    --disable-shared --enable-static
+
+  make
+}
+
+package() {
+  cd libtasn1-$pkgver
+
+  source /opt/devkitpro/devkita64.sh
+  source /opt/devkitpro/switchvars.sh
+
+  make DESTDIR="$pkgdir" install
+}
