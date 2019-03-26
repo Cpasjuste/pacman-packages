@@ -1,0 +1,41 @@
+diff -Naur libdsm-0.3.0/src/smb_types.h libdsm-0.3.0-switch/src/smb_types.h
+--- libdsm-0.3.0/src/smb_types.h	2017-02-11 16:42:20.000000000 +0100
++++ libdsm-0.3.0-switch/src/smb_types.h	2019-03-26 13:54:23.876949731 +0100
+@@ -42,7 +42,9 @@
+ #include <libtasn1.h>
+ 
+ #if !defined _WIN32
++#if !defined __SWITCH__
+ # include <netinet/ip.h>
++#endif
+ #else
+ # include <winsock2.h>
+ #endif
+diff -Naur libdsm-0.3.0/src/smb_utils.c libdsm-0.3.0-switch/src/smb_utils.c
+--- libdsm-0.3.0/src/smb_utils.c	2017-08-28 13:51:28.000000000 +0200
++++ libdsm-0.3.0-switch/src/smb_utils.c	2019-03-26 13:55:13.613287365 +0100
+@@ -32,6 +32,19 @@
+ # include "config.h"
+ #endif
+ 
++#ifdef __SWITCH__
++#include <switch.h>
++size_t      smb_to_utf16(const char *src, size_t src_len, char **dst)
++{
++    return utf8_to_utf16(dst, src, src_len);
++}
++
++size_t      smb_from_utf16(const char *src, size_t src_len, char **dst)
++{
++    return utf16_to_utf8(dst, src, src_len);
++}
++#else
++
+ #include <assert.h>
+ #include <iconv.h>
+ #include <locale.h>
+@@ -126,3 +139,4 @@
+     return (smb_iconv(src, src_len, dst,
+                       "UCS-2LE", current_encoding()));
+ }
++#endif

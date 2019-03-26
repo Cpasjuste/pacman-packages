@@ -1,5 +1,5 @@
 # Maintainer: Dave Murphy <davem@devkitpro.org>
-# Contributor: cpasjuste <cpasjuste gmail com>
+# Contributor: cpasjuste <cpasjuste@gmail.com>
 
 pkgname=switch-libdsm
 pkgver=0.3.0
@@ -13,6 +13,12 @@ makedepends=('switch-pkg-config' 'devkitpro-pkgbuild-helpers')
 source=("https://github.com/videolabs/libdsm/releases/download/v$pkgver/libdsm-$pkgver.tar.gz")
 sha256sums=('96caef854a1f7aa61ab6fdfca9c36a1813b37d23d013db0bc4ec7cd38a570b1c')
 groups=('switch-portlibs')
+depends=('switch-libtasn1')
+
+prepare() {
+  cd libdsm-$pkgver
+  patch -Np1 < ../../libdsm.patch
+}
 
 build() {
   cd libdsm-$pkgver
@@ -21,7 +27,7 @@ build() {
   source /opt/devkitpro/switchvars.sh
 
   ./configure --prefix="$PORTLIBS_PREFIX" --host=aarch64-none-elf \
-    --disable-shared --enable-static
+    --disable-shared --enable-static --disable-programs
 
   make
 }
