@@ -1,0 +1,35 @@
+# Maintainer: Dave Murphy <davem@devkitpro.org>
+# Contributor: cpasjuste <cpasjuste@gmail.com>
+
+pkgname=switch-libdsm
+pkgver=0.3.2
+pkgrel=1
+pkgdesc='Minimalist smb client (for Nintendo Switch homebrew development)'
+arch=('any')
+url='https://videolabs.github.io/libdsm/'
+license=('LGPL' 'GPL')
+options=(!strip staticlibs)
+makedepends=('switch-pkg-config' 'devkitpro-pkgbuild-helpers')
+depends=('switch-libtasn1')
+source=("https://github.com/videolabs/libdsm/releases/download/v$pkgver/libdsm-$pkgver.tar.gz")
+sha256sums=('6a91269d5756e9648b2453d9234a8010bb3c479b7fb81c809540000b35633d75')
+groups=('switch-portlibs')
+
+build() {
+  cd libdsm-$pkgver
+
+  source /opt/devkitpro/switchvars.sh
+
+  ./configure --prefix=$PORTLIBS_PREFIX --host=aarch64-none-elf \
+    --disable-shared --enable-static --disable-doc
+
+  make
+}
+
+package() {
+  cd libdsm-$pkgver
+
+  source /opt/devkitpro/switchvars.sh
+
+  make DESTDIR="$pkgdir" install
+}
