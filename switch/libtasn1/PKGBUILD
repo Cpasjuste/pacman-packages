@@ -10,7 +10,6 @@ url='http://www.gnu.org/software/libtasn1/'
 license=('LGPL' 'GPL')
 options=(!strip staticlibs)
 makedepends=('switch-pkg-config' 'devkitpro-pkgbuild-helpers')
-depends=('')
 source=("http://ftp.gnu.org/gnu/libtasn1/libtasn1-$pkgver.tar.gz")
 sha256sums=('0e0fb0903839117cb6e3b56e68222771bebf22ad7fc2295a0ed7d576e8d4329d')
 groups=('switch-portlibs')
