@@ -1,0 +1,35 @@
+# Maintainer: Dave Murphy <davem@devkitpro.org>
+# Contributor: cpasjuste <cpasjuste@gmail.com>
+
+pkgname=switch-libtasn1
+pkgver=4.16.0
+pkgrel=1
+pkgdesc='Libtasn1 is the ASN.1 library used by GnuTLS, p11-kit and some other packages (for Nintendo Switch homebrew development)'
+arch=('any')
+url='http://www.gnu.org/software/libtasn1/'
+license=('LGPL' 'GPL')
+options=(!strip staticlibs)
+makedepends=('switch-pkg-config' 'devkitpro-pkgbuild-helpers')
+depends=('')
+source=("http://ftp.gnu.org/gnu/libtasn1/libtasn1-$pkgver.tar.gz")
+sha256sums=('0e0fb0903839117cb6e3b56e68222771bebf22ad7fc2295a0ed7d576e8d4329d')
+groups=('switch-portlibs')
+
+build() {
+  cd libtasn1-$pkgver
+
+  source /opt/devkitpro/switchvars.sh
+
+  ./configure --prefix=$PORTLIBS_PREFIX --host=aarch64-none-elf \
+    --disable-shared --enable-static --disable-doc
+
+  make -C lib
+}
+
+package() {
+  cd libtasn1-$pkgver
+
+  source /opt/devkitpro/switchvars.sh
+
+  make -C lib DESTDIR="$pkgdir" install
+}
