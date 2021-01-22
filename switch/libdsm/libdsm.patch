@@ -1,0 +1,52 @@
+diff -NBaur libdsm-0.3.2.old/src/smb_types.h libdsm-0.3.2.new/src/smb_types.h 
+--- libdsm-0.3.2.old/src/smb_types.h	2020-01-15 17:50:40.000000000 +0100
++++ libdsm-0.3.2.new/src/smb_types.h	2021-01-22 14:10:45.781137908 +0100
+@@ -42,7 +42,9 @@
+ #include <libtasn1.h>
+ 
+ #if !defined _WIN32
++#if !defined __SWITCH__
+ # include <netinet/ip.h>
++#endif
+ #else
+ # include <winsock2.h>
+ #endif
+diff -NBaur libdsm-0.3.2.old/src/smb_utils.c libdsm-0.3.2.new/src/smb_utils.c 
+--- libdsm-0.3.2.old/src/smb_utils.c	2020-01-15 17:50:40.000000000 +0100
++++ libdsm-0.3.2.new/src/smb_utils.c	2021-01-22 14:44:49.023757407 +0100
+@@ -33,7 +33,9 @@
+ #endif
+ 
+ #include <assert.h>
++#ifndef __SWITCH__
+ #include <iconv.h>
++#endif
+ #include <locale.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -69,7 +71,9 @@
+ static size_t smb_iconv(const char *src, size_t src_len, char **dst,
+                         const char *src_enc, const char *dst_enc)
+ {
++#ifndef __SWITCH__
+     iconv_t   ic;
++#endif
+     size_t    ret = 0;
+ 
+     assert(src != NULL && dst != NULL && src_enc != NULL && dst_enc != NULL);
+@@ -80,6 +84,8 @@
+         return 0;
+     }
+ 
++#ifdef __SWITCH__
++#else
+     if ((ic = iconv_open(dst_enc, src_enc)) == (iconv_t)-1)
+     {
+         BDSM_dbg("Unable to open iconv to convert from %s to %s\n",
+@@ -112,6 +118,7 @@
+ 
+     if (ret == 0)
+         *dst = NULL;
++#endif
+     return ret;
+ }

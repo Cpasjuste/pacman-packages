@@ -11,9 +11,17 @@ license=('LGPL' 'GPL')
 options=(!strip staticlibs)
 makedepends=('switch-pkg-config' 'devkitpro-pkgbuild-helpers')
 depends=('switch-libtasn1')
-source=("https://github.com/videolabs/libdsm/releases/download/v$pkgver/libdsm-$pkgver.tar.gz")
-sha256sums=('6a91269d5756e9648b2453d9234a8010bb3c479b7fb81c809540000b35633d75')
+source=("https://github.com/videolabs/libdsm/releases/download/v$pkgver/libdsm-$pkgver.tar.gz" "libdsm.patch")
+sha256sums=(
+  '6a91269d5756e9648b2453d9234a8010bb3c479b7fb81c809540000b35633d75'
+  '82aaf28ce5b42a09865d8b02c7c83e616ffc408244ebf2dead2b2d8665e9baae'
+)
 groups=('switch-portlibs')
+
+prepare() {
+  cd libdsm-$pkgver
+  patch -Np1 -i "$srcdir/libdsm.patch"
+}
 
 build() {
   cd libdsm-$pkgver
@@ -21,7 +29,7 @@ build() {
   source /opt/devkitpro/switchvars.sh
 
   ./configure --prefix=$PORTLIBS_PREFIX --host=aarch64-none-elf \
-    --disable-shared --enable-static --disable-doc
+    --disable-shared --enable-static --disable-programs
 
   make
 }
